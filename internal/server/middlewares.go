@@ -1,6 +1,7 @@
 package server
 
 import (
+	"fmt"
 	"my_project/internal/helper"
 	"strings"
 
@@ -13,7 +14,10 @@ func Authenticated() gin.HandlerFunc {
 		if token != "" {
 			tokenParts := strings.Split(token, " ")
 
-			claims, _ := helper.ExtractJwtClaim[Claims](tokenParts[1], jwtSecret)
+			claims, err := helper.ExtractJwtClaim[Claims](tokenParts[1], jwtSecret)
+			if err != nil {
+				fmt.Printf("Validate token error %v", err)
+			}
 
 			c.Set("user_id", claims.UserID.String())
 		}
