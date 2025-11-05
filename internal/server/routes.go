@@ -14,6 +14,26 @@ import (
 	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
+// ──────────────────────────────────────────────────────────────
+// GENERAL API INFO (REQUIRED)
+// ──────────────────────────────────────────────────────────────
+// @title           My Project API
+// @version         1.0
+// @description     Simple JWT auth demo
+// @host            localhost:8000
+// @BasePath       /
+
+// ──────────────────────────────────────────────────────────────
+// JWT AUTH DEFINITION (PUT THIS ANYWHERE IN THE FILE)
+// ──────────────────────────────────────────────────────────────
+// @securityDefinitions.apikey BearerAuth
+// @in header
+// @name Authorization
+// @description Type "Bearer <your-jwt-token>" in the field
+
+// ──────────────────────────────────────────────────────────────
+// YOUR HANDLERS
+// ──────────────────────────────────────────────────────────────
 func (s *Server) RegisterRoutes() http.Handler {
 	r := gin.Default()
 	r.Use(Authenticated())
@@ -35,7 +55,14 @@ func (s *Server) RegisterRoutes() http.Handler {
 }
 
 // SignInHandler godoc
-// @Summary      Sign in
+// @Summary      Sign in and get JWT
+// @Description  Generates a JWT token with a random user ID (demo only)
+// @Tags         auth
+// @Accept       json
+// @Produce      json
+// @Success      200  {object}  map[string]string  "access_token"
+// @Failure      500  {object}  map[string]string  "error"
+// @Router       /signin [post]
 func (s *Server) SignInHandler(c *gin.Context) {
 	userId, _ := uuid.NewV4()
 	jwtBody := Claims{UserID: userId}
@@ -50,8 +77,15 @@ func (s *Server) SignInHandler(c *gin.Context) {
 
 }
 
-// SignInHandler godoc
-// @Summary      Get self user info
+// WhoamiHandler godoc
+// @Summary      Get current user info
+// @Description  Returns the user_id from JWT (requires Authenticated middleware)
+// @Tags         auth
+// @Produce      json
+// @Security     BearerAuth
+// @Success      200  {object}  map[string]string  "user_id"
+// @Failure      401  {object}  map[string]string  "unauthorized"
+// @Router       /me [get]
 func (s *Server) WhoamiHandler(c *gin.Context) {
 	userId := c.MustGet("user_id").(string)
 

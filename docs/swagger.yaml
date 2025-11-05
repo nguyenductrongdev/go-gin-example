@@ -1,4 +1,60 @@
+basePath: /
+host: localhost:31070
 info:
-  contact: {}
-paths: {}
+  contact:
+    email: support@example.com
+    name: API Support
+  description: Simple auth API with JWT sign-in and whoami
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+  title: My Project API
+  version: "1.0"
+paths:
+  /me:
+    get:
+      description: Returns the user_id from JWT (requires Authenticated middleware)
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: user_id
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get current user info
+      tags:
+      - auth
+  /signin:
+    post:
+      consumes:
+      - application/json
+      description: Generates a JWT token with a random user ID (demo only)
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: access_token
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Sign in and get JWT
+      tags:
+      - auth
 swagger: "2.0"

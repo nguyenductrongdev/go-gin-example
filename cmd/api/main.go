@@ -37,6 +37,18 @@ func gracefulShutdown(apiServer *http.Server, done chan bool) {
 	done <- true
 }
 
+// server/server.go  (or wherever RegisterRoutes lives)
+
+// @title           My Project API
+// @version         1.0
+// @description     Simple auth API with JWT sign-in and whoami
+// @contact.name    API Support
+// @contact.email   support@example.com
+// @license.name    MIT
+// @license.url     https://opensource.org/licenses/MIT
+
+// @host      localhost:31070
+// @BasePath  /
 func main() {
 
 	server := server.NewServer()
