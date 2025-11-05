@@ -3,11 +3,18 @@ How to quick init Go project
 ```sh
 go install github.com/melkeydev/go-blueprint@latest
 go-blueprint create --name my_project --framework gin --driver sqlite
-swag init -g cmd/api/main.go # gen swagger
+```
 
+Start service
+```sh
 go run cmd/api/main.go
 ```
 
+# Note
+Gen swagger
+```sh
+swag init -g cmd/api/main.go
+```
 
 ## Getting Started
 
