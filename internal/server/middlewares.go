@@ -12,12 +12,12 @@ import (
 
 func Authenticated() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		CurrentUserId := "00000000-0000-0000-0000-000000000000"
+		currentUserId := "00000000-0000-0000-0000-000000000000"
 
 		gatewayUserId := c.GetHeader("X-Ws-User-Id")
 		if gatewayUserId != "" {
 			log.Printf("Gateway authenticated user %v", gatewayUserId)
-			CurrentUserId = gatewayUserId
+			currentUserId = gatewayUserId
 
 		} else {
 			token := c.GetHeader("Authorization")
@@ -30,12 +30,12 @@ func Authenticated() gin.HandlerFunc {
 					fmt.Printf("Validate token error %v", err)
 				}
 
-				CurrentUserId = claims.UserID.String()
+				currentUserId = claims.UserID.String()
 
 			}
 		}
 
-		c.Set("user_id", CurrentUserId)
+		c.Set("user_id", currentUserId)
 
 		c.Next()
 	}
