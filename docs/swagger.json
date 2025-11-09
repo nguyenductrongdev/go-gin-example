@@ -13,7 +13,7 @@
         },
         "version": "1.0"
     },
-    "host": "localhost:31070",
+    "host": "localhost:31073",
     "basePath": "/",
     "paths": {
         "/me": {

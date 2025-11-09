@@ -47,13 +47,13 @@ func (s *Server) RegisterRoutes() http.Handler {
 		AllowCredentials: true,
 	}))
 
-	r.POST("/signin", s.SignInHandler)
+	r.POST("/ws-chat/signin", s.SignInHandler)
 
-	r.GET("/me", s.WhoamiHandler)
+	r.GET("/ws-chat/me", s.WhoamiHandler)
 
-	r.GET("/ws", handler.WsHandler)
+	r.GET("/ws-chat/ws", handler.WsHandler)
 
-	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+	r.GET("/ws-chat/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	return r
 }

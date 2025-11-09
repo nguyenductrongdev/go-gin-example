@@ -4,10 +4,6 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
-	"strings"
-
-	"go-gin-example/internal/constants"
-	"go-gin-example/internal/helper"
 
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
@@ -28,26 +24,9 @@ var broadcast = make(chan []byte)
 
 // Handle WebSocket
 func WsHandler(c *gin.Context) {
-	// 1. Lấy token từ query
-	authorization := c.GetHeader("Authorization")
 
-	if authorization == "" {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "token required"})
-		return
-	}
-
-	jwt := strings.Split(authorization, " ")[1]
-
-	token, err := helper.ExtractJwtClaim[constants.Claims](jwt, constants.JwtSecret)
-
-	if err != nil {
-		log.Println(err)
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "invalid token"})
-		return
-	}
-
-	// 3. Lấy user_id
-	userID := token.UserID
+	// Authenticated userId will be injected by gateway
+	ctxUserId := c.GetString("user_id")
 
 	// 4. Upgrade to WebSocket
 	conn, err := upgrader.Upgrade(c.Writer, c.Request, nil)
@@ -65,7 +44,7 @@ func WsHandler(c *gin.Context) {
 	// Gửi welcome
 	welcome := map[string]string{
 		"type":    "welcome",
-		"message": "Connected as " + userID.String(),
+		"message": "Connected as " + ctxUserId,
 	}
 	sendJSON(client, welcome)
 

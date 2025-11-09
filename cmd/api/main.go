@@ -48,7 +48,7 @@ func gracefulShutdown(apiServer *http.Server, done chan bool) {
 // @license.name    MIT
 // @license.url     https://opensource.org/licenses/MIT
 
-// @host      localhost:31070
+// @host      localhost:31073
 // @BasePath  /
 func main() {
 
