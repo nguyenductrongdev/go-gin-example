@@ -26,7 +26,7 @@ func ExtractJwtClaim[T any](jwtString string, secret string) (T, error) {
 			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
 		}
 		return []byte(secret), nil
-	}, jwt.WithValidMethods([]string{"HS256", "HS384", "HS512"}))
+	}, jwt.WithValidMethods([]string{"HS512"}))
 
 	if err != nil {
 		return zero, fmt.Errorf("failed to parse jwt: %w", err)
@@ -73,7 +73,7 @@ func SignJwt[T any](claims T, secret string, expiresIn time.Duration) (string, e
 		claimsMap["exp"] = now + int64(expiresIn.Seconds())
 	}
 
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claimsMap)
+	token := jwt.NewWithClaims(jwt.SigningMethodHS512, claimsMap)
 
 	signedToken, err := token.SignedString([]byte(secret))
 	if err != nil {

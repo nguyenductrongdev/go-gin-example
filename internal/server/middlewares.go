@@ -2,7 +2,8 @@ package server
 
 import (
 	"fmt"
-	"my_project/internal/helper"
+	"go-gin-example/internal/constants"
+	"go-gin-example/internal/helper"
 	"strings"
 
 	"github.com/gin-gonic/gin"
@@ -11,10 +12,11 @@ import (
 func Authenticated() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		token := c.GetHeader("Authorization")
+
 		if token != "" {
 			tokenParts := strings.Split(token, " ")
 
-			claims, err := helper.ExtractJwtClaim[Claims](tokenParts[1], jwtSecret)
+			claims, err := helper.ExtractJwtClaim[constants.Claims](tokenParts[1], constants.JwtSecret)
 			if err != nil {
 				fmt.Printf("Validate token error %v", err)
 			}

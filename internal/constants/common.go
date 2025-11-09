@@ -1,8 +1,8 @@
-package server
+package constants
 
 import "github.com/gofrs/uuid"
 
-const jwtSecret = "super-secret-123"
+const JwtSecret = "super-secret-123"
 
 type Claims struct {
 	UserID uuid.UUID `json:"user_id"`

@@ -9,7 +9,8 @@ import (
 	"syscall"
 	"time"
 
-	"my_project/internal/server"
+	"go-gin-example/internal/handler"
+	"go-gin-example/internal/server"
 )
 
 func gracefulShutdown(apiServer *http.Server, done chan bool) {
@@ -55,6 +56,8 @@ func main() {
 
 	// Create a done channel to signal when the shutdown is complete
 	done := make(chan bool, 1)
+
+	go handler.HandleMessages()
 
 	// Run graceful shutdown in a separate goroutine
 	go gracefulShutdown(server, done)

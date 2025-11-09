@@ -4,8 +4,10 @@ import (
 	"net/http"
 	"time"
 
-	_ "my_project/docs"
-	"my_project/internal/helper"
+	_ "go-gin-example/docs"
+	"go-gin-example/internal/constants"
+	"go-gin-example/internal/handler"
+	"go-gin-example/internal/helper"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -49,6 +51,8 @@ func (s *Server) RegisterRoutes() http.Handler {
 
 	r.GET("/me", s.WhoamiHandler)
 
+	r.GET("/ws", handler.WsHandler)
+
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	return r
@@ -65,8 +69,8 @@ func (s *Server) RegisterRoutes() http.Handler {
 // @Router       /signin [post]
 func (s *Server) SignInHandler(c *gin.Context) {
 	userId, _ := uuid.NewV4()
-	jwtBody := Claims{UserID: userId}
-	if token, err := helper.SignJwt(jwtBody, jwtSecret, 5*time.Minute); err == nil {
+	jwtBody := constants.Claims{UserID: userId}
+	if token, err := helper.SignJwt(jwtBody, constants.JwtSecret, 30*time.Minute); err == nil {
 		resp := make(map[string]string)
 		resp["access_token"] = token
 
