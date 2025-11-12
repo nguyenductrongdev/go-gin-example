@@ -2,6 +2,7 @@ package handler
 
 import (
 	"encoding/json"
+	"go-gin-example/internal/hub"
 	"log"
 	"net/http"
 
@@ -12,15 +13,6 @@ import (
 var upgrader = websocket.Upgrader{
 	CheckOrigin: func(r *http.Request) bool { return true }, // dev only
 }
-
-// WebSocket Hub đơn giản
-type Client struct {
-	conn *websocket.Conn
-	send chan []byte
-}
-
-var clients = make(map[*Client]bool)
-var broadcast = make(chan []byte)
 
 // Handle WebSocket
 func WsHandler(c *gin.Context) {
@@ -37,9 +29,8 @@ func WsHandler(c *gin.Context) {
 	defer conn.Close()
 
 	// 5. Tạo client
-	client := &Client{conn: conn, send: make(chan []byte, 256)}
-	clients[client] = true
-	defer delete(clients, client)
+	client := &hub.Client{Conn: conn, Send: make(chan []byte, 256)}
+	hub.Get().Register <- client
 
 	// Gửi welcome
 	welcome := map[string]string{
@@ -47,41 +38,10 @@ func WsHandler(c *gin.Context) {
 		"message": "Connected as " + ctxUserId,
 	}
 	sendJSON(client, welcome)
-
-	// Read loop
-	go func() {
-		for {
-			_, msg, err := conn.ReadMessage()
-			if err != nil {
-				break
-			}
-			broadcast <- msg // echo to all
-		}
-	}()
-
-	// Write loop
-	for {
-		select {
-		case msg, ok := <-client.send:
-			if !ok {
-				return
-			}
-			conn.WriteMessage(websocket.TextMessage, msg)
-		}
-	}
 }
 
 // Gửi JSON
-func sendJSON(client *Client, v interface{}) {
+func sendJSON(client *hub.Client, v interface{}) {
 	data, _ := json.Marshal(v)
-	client.send <- data
-}
-
-// Broadcast worker
-func HandleMessages() {
-	for msg := range broadcast {
-		for client := range clients {
-			client.send <- msg
-		}
-	}
+	client.Send <- data
 }

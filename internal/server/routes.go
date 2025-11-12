@@ -53,6 +53,10 @@ func (s *Server) RegisterRoutes() http.Handler {
 
 	r.GET("/ws-chat/ws", handler.WsHandler)
 
+	r.GET("/ws-chat/stomp/connect", handler.StompHandler)
+
+	r.GET("/ws-chat/stomp/send-private-message", handler.SendStompPrivateHandler)
+
 	r.GET("/ws-chat/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	return r
